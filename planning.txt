@@ -48,3 +48,23 @@ package.json -> dependencies -> the package on which project is dependent on
 
 Whenever a request is coming it starts matching from starting of the code -> order of writing routes matters 
 
+ROUTES- 
+/ab?c -> this means b is optional in route
+/ab+c -> this means any number of b can be there
+/ab*cd -> this means u can write anything b/w ab and cd(must start with ab and end with cd)
+/a(bc)?d -> this means bc is optional 
+/a(bc)+d -> this means any number of bc can be there
+/a/ -> this means anywhere a letter should be there
+/.*fly$/ -> this means it should end with fly(anything can be there in starting)
+/user?userId=101 -> userId can be get using console.log(req.query)
+/user?userId=101&password=testing -> userID and password can be get using console.log(req.query)
+/user/101 or /user/707 -> dynamic routing can be achieved using -> 
+        app.get("/user/:userId", (req, res) => {
+                console.log(req.params) -> this will console userID:707
+                res.send({ firstName: "John", lastName: "Doe" });
+        });
+/user/707/swati/testing
+        app.get("/user/:userId/:name/:password", (req, res) => {
+                console.log(req.params) -> this will console userID:707, name:'swati', password:'testing'
+                res.send({ firstName: "John", lastName: "Doe" });
+        });
