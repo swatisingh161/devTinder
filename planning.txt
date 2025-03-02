@@ -45,3 +45,6 @@ package.json -> dependencies -> the package on which project is dependent on
                    2  -> patch -> small change/bug fix
                    ^  -> automatically updated to 4.x.x (allowing to auto update)
                    ~  -> allows updates to the patch version only (4.19.x)
+
+Whenever a request is coming it starts matching from starting of the code -> order of writing routes matters 
+
