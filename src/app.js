@@ -3,28 +3,58 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
+const { LiaExclamationSolid } = require("react-icons/lia");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  // Validation of data
-  validateSignUpData(req);
-
-  // Encrypt the password
-
-  // Creating a new instance of the User model
-  const user = new User(req.body);
-  //   const user = new User({
-  //     firstName: "sachin",
-  //     lastName: "tendulkar",
-  //     emailId: "sachin@gmail.com",
-  //     password: "sachin23",
-  //   });
   try {
+    // Validation of data
+    validateSignUpData(req);
+
+    const { firstName, lastName, password, emailId } = req.body;
+
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Creating a new instance of the User model
+    const user = new User({
+      firstName,
+      lastName,
+      password: passwordHash,
+      emailId,
+    });
+    //   const user = new User({
+    //     firstName: "sachin",
+    //     lastName: "tendulkar",
+    //     emailId: "sachin@gmail.com",
+    //     password: "sachin23",
+    //   });
     await user.save();
     res.send("User Added Successfully");
   } catch (err) {
-    res.status(400).send("Error saving the user:" + err.message);
+    res.status(400).send("ERROR:" + err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid Credentials");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (isPasswordValid) {
+      res.send("Login Successful!");
+    } else {
+      throw new Error("Invalid Credentials");
+    }
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
   }
 });
 
